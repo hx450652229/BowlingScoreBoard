@@ -14,6 +14,10 @@ UdpReceiver::UdpReceiver(uint16_t port, QObject *parent) : QObject(parent) {
     }
 }
 
+uint16_t UdpReceiver::localPort() const {
+    return m_udpSocket ? m_udpSocket->localPort() : 0;
+}
+
 void UdpReceiver::processPendingDatagrams() {
     while (m_udpSocket->hasPendingDatagrams()) {
         QNetworkDatagram datagram = m_udpSocket->receiveDatagram();

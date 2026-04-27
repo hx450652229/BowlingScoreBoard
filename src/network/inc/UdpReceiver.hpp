@@ -8,6 +8,7 @@ class UdpReceiver : public QObject {
     Q_OBJECT
 public:
     UdpReceiver(uint16_t port = 45454, QObject *parent = nullptr);
+    uint16_t localPort() const;
 
 signals:
     // 当解析出有效的投球数时发出

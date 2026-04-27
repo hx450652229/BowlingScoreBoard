@@ -8,6 +8,11 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+enable_testing()
+include(CTest)
+find_package(GTest REQUIRED)
+include(GoogleTest)
+
 find_package(Qt6 REQUIRED COMPONENTS
     Core Gui Qml Quick QuickControls2)
 

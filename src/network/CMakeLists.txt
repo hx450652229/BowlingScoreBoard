@@ -14,3 +14,16 @@ target_link_libraries(BowlingNetwork
         Qt6::Network
         Qt6::Core
 )
+
+if (BUILD_TESTING)
+    add_executable(BowlingNetworkTests
+        test/UdpReceiverTest.cpp
+    )
+    target_link_libraries(BowlingNetworkTests
+        PRIVATE
+            BowlingNetwork
+            GTest::gtest
+    )
+    target_compile_features(BowlingNetworkTests PUBLIC cxx_std_20)
+    gtest_discover_tests(BowlingNetworkTests)
+endif()

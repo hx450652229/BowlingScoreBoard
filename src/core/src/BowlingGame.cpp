@@ -87,12 +87,25 @@ std::vector<BowlingGame::FrameStatus> BowlingGame::getFramesStatus() const {
                         status.isCompleted = true;
                     }
                 }
+                statuses.push_back(status);
                 break; // 第10局处理完直接结束
             }
         }
         statuses.push_back(status);
     }
     return statuses;
+}
+
+int BowlingGame::scoreAtFrame(int frameIndex) const {
+    if (frameIndex < 1 || frameIndex > MAX_FRAMES) {
+        throw std::out_of_range("Frame index must be between 1 and 10");
+    }
+    auto statuses = getFramesStatus();
+    const FrameStatus &frame = statuses[frameIndex - 1];
+    if (!frame.isCompleted) {
+        throw std::logic_error("Frame score is not available yet");
+    }
+    return frame.cumulativeScore;
 }
 
 bool BowlingGame::isFinished() const {
