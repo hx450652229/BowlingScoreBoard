@@ -1,9 +1,6 @@
 #include "ScoreboardViewModel.hpp"
 #include <QDebug>
 
-/**
- * @brief Construct a new ScoreboardViewModel.
- */
 ScoreboardViewModel::ScoreboardViewModel(QObject *parent) : QObject(parent) {}
 
 void ScoreboardViewModel::roll(int pins)

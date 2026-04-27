@@ -1,9 +1,6 @@
 #include "UdpReceiver.hpp"
 #include <QNetworkDatagram>
 
-/**
- * @brief Construct and bind the UDP receiver socket.
- */
 UdpReceiver::UdpReceiver(uint16_t port, QObject *parent) : QObject(parent)
 {
     m_udpSocket = new QUdpSocket(this);
@@ -26,9 +23,6 @@ uint16_t UdpReceiver::localPort() const
     return m_udpSocket ? m_udpSocket->localPort() : 0;
 }
 
-/**
- * @brief Process any pending datagrams on the UDP socket.
- */
 void UdpReceiver::processPendingDatagrams()
 {
     while (m_udpSocket->hasPendingDatagrams())

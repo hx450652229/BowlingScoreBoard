@@ -1,8 +1,6 @@
 # BowlingScoreboard
 
-## Project Overview
-
-BowlingScoreboard is a Qt6-based bowling score display application. The project includes:
+**BowlingScoreboard** is a Qt6-based bowling score display application. The project includes:
 - A QML-based user interface for a bowling scoreboard.
 - A core scoring library for bowling game logic.
 - A network module that receives UDP data.
@@ -20,28 +18,49 @@ Required:
   - Quick
   - QuickControls2
   - Network
-- GoogleTest (installed and discoverable by CMake)
+- GoogleTest
 
 Optional for static analysis:
 - clang-tidy
 - cppcheck
 - cppcheck-htmlreport (for HTML reports)
 
-## Build Instructions
+## Connect to Dev Container
 
-1. Configure the project with CMake:
+This project supports a Dev Container-based toolchain setup. On the host machine, install Docker and grant the container permission to access the local X11 display:
+
+```bash
+xhost +local:docker
+```
+
+### Connect via VS Code
+
+Press **Ctrl+Shift+P** and select **Dev Containers: Reopen in Container**.
+
+### Connect via Terminal:
+
+Start container and enter source directory: 
+```bash
+cd ./.devcontainer
+docker compose up -d
+docker compose exec qt_dev /bin/bash
+cd workspaces/BowlingScoreBoard/
+```
+
+## Configure and Build
+In container shell, configure the project with CMake:
 
 ```bash
 cmake -S . -B ./build
 ```
 
-2. Build the project:
+Build the project:
 
 ```bash
 cmake --build ./build
 ```
 
-The generated executable is `BowlingScoreboard` in the build directory.
+The generated executable is `BowlingScoreboard` in the `./build` directory.
 
 ## Run the Application
 
@@ -57,7 +76,7 @@ The application opens a bowling scoreboard window and listens for UDP score data
 
 ### Test UDP input with `nc`
 
-In another terminal, send test UDP payloads to the local receiver on port `45454`:
+In **host** terminal, send test UDP payloads to the local receiver on port `45454`:
 
 ```bash
 printf '5' | nc -u -w1 localhost 45454
@@ -105,11 +124,13 @@ cmake --build ./build --target clang-tidy
 
 ## Project Structure
 
-- `CMakeLists.txt` — main build file
-- `src/main.cpp` — application entry point
-- `src/core` — bowling scoring library and unit tests
-- `src/network` — UDP network module and tests
-- `src/viewmodel` — QML view model integration
-- `src/ui` — QML user interface files
-- `docs/` — generated documentation output
-- `build/` — out-of-source build directory
+- `CMakeLists.txt`: main build file
+- `src/main.cpp`: application entry point
+- `src/core`: bowling scoring library and unit tests
+- `src/network`: UDP network module and tests
+- `src/viewmodel`: QML view model integration
+- `src/ui`: QML user interface files
+- `docs/`: generated documentation output
+- `build/`: out-of-source build directory
+- `.vscode`: vscode related settings
+- `.devcontainer`: Docker container related files
