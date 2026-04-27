@@ -11,11 +11,11 @@ Rectangle {
     border.width: 1
     radius: 4
 
-    // 暴露给外部设置的属性 (相当于 C++ 的 public variables)
+    // External properties exposed for each frame box.
     property int frameNumber: 1
     property string throw1: ""
     property string throw2: ""
-    property string throw3: "" // 仅第10局使用
+    property string throw3: "" // Used only in the tenth frame.
     property string frameScore: ""
 
     ColumnLayout {
@@ -23,7 +23,7 @@ Rectangle {
         anchors.margins: 5
         spacing: 2
 
-        // 顶部：局数
+        // Top: frame number.
         Text {
             Layout.alignment: Qt.AlignHCenter
             text: root.frameNumber
@@ -31,7 +31,7 @@ Rectangle {
             font.pixelSize: 14
         }
 
-        // 中间：击倒的瓶数展示 (分成两个/三个小框)
+        // Middle: pin display for individual throws.
         RowLayout {
             Layout.fillWidth: true
             Layout.preferredHeight: 30
@@ -49,7 +49,7 @@ Rectangle {
                 border.color: "#999"
                 Text { anchors.centerIn: parent; text: root.throw2; font.bold: true }
             }
-            // 第10局才显示的第三个框
+            // Third roll display visible only for the tenth frame.
             Rectangle {
                 visible: root.frameNumber === 10
                 Layout.fillWidth: true
@@ -59,7 +59,7 @@ Rectangle {
             }
         }
 
-        // 底部：累计总分
+        // Bottom: cumulative frame score.
         Text {
             Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
             Layout.fillHeight: true

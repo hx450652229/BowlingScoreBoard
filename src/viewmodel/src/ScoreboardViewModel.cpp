@@ -1,17 +1,20 @@
 #include "ScoreboardViewModel.hpp"
 
+/**
+ * @brief Construct a new ScoreboardViewModel.
+ */
 ScoreboardViewModel::ScoreboardViewModel(QObject *parent) 
     : QObject(parent) {}
 
 void ScoreboardViewModel::roll(int pins) {
     try {
         m_game.roll(pins);
-        // 数据变了，通知 UI 刷新
+        // Notify the UI that game data has changed.
         emit framesChanged();
         emit totalScoreChanged();
         emit isFinishedChanged();
     } catch (...) {
-        // 生产环境应有更细致的错误处理
+        // In production, this should handle errors explicitly.
     }
 }
 
@@ -30,7 +33,7 @@ QVariantList ScoreboardViewModel::frames() const {
         if (i < statuses.size()) {
             list.append(wrapFrame(statuses[i], i));
         } else {
-            // 填充空白局，保证 UI 始终显示 10 个格子
+            // Fill missing frames so the UI always displays ten cells.
             list.append(wrapFrame({}, i));
         }
     }
@@ -41,14 +44,12 @@ QVariantMap ScoreboardViewModel::wrapFrame(const BowlingGame::FrameStatus& statu
     QVariantMap map;
     map["frameNumber"] = index + 1;
     
-    // 处理显示逻辑：比如 10 变为 "X"，补中变为 "/"
+    // Convert raw pin values into display strings.
     auto getDisplay = [&](int rollIdx) -> QString {
         if (rollIdx >= status.rolls.size()) return "";
         int p = status.rolls[rollIdx];
         
-        // Strike 逻辑
         if (p == 10) return "X";
-        // Spare 逻辑 (第二球且总和为10)
         if (rollIdx == 1 && status.rolls[0] + p == 10) return "/";
         
         return QString::number(p);
@@ -56,7 +57,7 @@ QVariantMap ScoreboardViewModel::wrapFrame(const BowlingGame::FrameStatus& statu
 
     map["t1"] = getDisplay(0);
     map["t2"] = getDisplay(1);
-    map["t3"] = getDisplay(2); // 第10局奖励球
+    map["t3"] = getDisplay(2); // Bonus roll shown only in the tenth frame.
     map["score"] = status.isCompleted ? QString::number(status.cumulativeScore) : "";
     
     return map;

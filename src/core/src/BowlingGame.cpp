@@ -1,15 +1,21 @@
 #include "BowlingGame.hpp"
 
+/**
+ * @brief Record a single roll for the current game.
+ */
 void BowlingGame::roll(int pins) {
     if (pins < 0 || pins > ALL_PINS) {
         throw std::invalid_argument("Pins must be between 0 and 10");
     }
     if (isFinished()) {
-        return; // 或者抛出错误
+        return; // Ignore rolls after the game is finished.
     }
     m_rolls.push_back(pins);
 }
 
+/**
+ * @brief Compute the total score for the current game.
+ */
 int BowlingGame::score() const {
     int totalScore = 0;
     int rollIndex = 0;
@@ -31,6 +37,9 @@ int BowlingGame::score() const {
     return totalScore;
 }
 
+/**
+ * @brief Retrieve the frame status for the current game.
+ */
 std::vector<BowlingGame::FrameStatus> BowlingGame::getFramesStatus() const {
     std::vector<FrameStatus> statuses;
     int rollIndex = 0;
@@ -40,7 +49,7 @@ std::vector<BowlingGame::FrameStatus> BowlingGame::getFramesStatus() const {
         FrameStatus status;
         
         if (rollIndex < m_rolls.size()) {
-            if (frame < 9) { // 第 1-9 局
+            if (frame < 9) {
                 if (isStrike(rollIndex)) {
                     status.rolls.push_back(m_rolls[rollIndex]);
                     if (rollIndex + 2 < m_rolls.size()) {
@@ -66,29 +75,29 @@ std::vector<BowlingGame::FrameStatus> BowlingGame::getFramesStatus() const {
                         }
                         rollIndex += 2;
                     } else {
-                        rollIndex += 1; // 这一局还没投完
+                        rollIndex += 1; // The current frame is not yet complete.
                     }
                 }
-            } else { // 第 10 局特殊规则
+            } else {
                 status.rolls.push_back(m_rolls[rollIndex]);
                 if (rollIndex + 1 < m_rolls.size()) {
                     status.rolls.push_back(m_rolls[rollIndex + 1]);
-                    // 如果前两球总和 >= 10，则有第三球
-                    if (m_rolls[rollIndex] + m_rolls[rollIndex+1] >= ALL_PINS) {
+                    // If the first two balls total at least 10, a third bonus ball is allowed.
+                    if (m_rolls[rollIndex] + m_rolls[rollIndex + 1] >= ALL_PINS) {
                         if (rollIndex + 2 < m_rolls.size()) {
                             status.rolls.push_back(m_rolls[rollIndex + 2]);
-                            currentCumulativeScore += m_rolls[rollIndex] + m_rolls[rollIndex+1] + m_rolls[rollIndex+2];
+                            currentCumulativeScore += m_rolls[rollIndex] + m_rolls[rollIndex + 1] + m_rolls[rollIndex + 2];
                             status.cumulativeScore = currentCumulativeScore;
                             status.isCompleted = true;
                         }
                     } else {
-                        currentCumulativeScore += m_rolls[rollIndex] + m_rolls[rollIndex+1];
+                        currentCumulativeScore += m_rolls[rollIndex] + m_rolls[rollIndex + 1];
                         status.cumulativeScore = currentCumulativeScore;
                         status.isCompleted = true;
                     }
                 }
                 statuses.push_back(status);
-                break; // 第10局处理完直接结束
+                break; // End after the tenth frame.
             }
         }
         statuses.push_back(status);
@@ -96,6 +105,9 @@ std::vector<BowlingGame::FrameStatus> BowlingGame::getFramesStatus() const {
     return statuses;
 }
 
+/**
+ * @brief Get the cumulative score at the specified frame.
+ */
 int BowlingGame::scoreAtFrame(int frameIndex) const {
     if (frameIndex < 1 || frameIndex > MAX_FRAMES) {
         throw std::out_of_range("Frame index must be between 1 and 10");
@@ -108,17 +120,24 @@ int BowlingGame::scoreAtFrame(int frameIndex) const {
     return frame.cumulativeScore;
 }
 
+/**
+ * @brief Determine whether the game has finished.
+ */
 bool BowlingGame::isFinished() const {
     auto statuses = getFramesStatus();
     if (statuses.size() < MAX_FRAMES) return false;
     return statuses.back().isCompleted;
 }
 
+/**
+ * @brief Reset the recorded rolls and start a new game.
+ */
 void BowlingGame::reset() {
     m_rolls.clear();
 }
 
-// 内部辅助私有实现
+// Helper functions used by scoring logic.
+
 bool BowlingGame::isStrike(int rollIndex) const {
     return rollIndex < m_rolls.size() && m_rolls[rollIndex] == ALL_PINS;
 }

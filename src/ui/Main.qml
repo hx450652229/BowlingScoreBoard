@@ -4,17 +4,17 @@ import QtQuick.Layouts
 
 Window {
     id: root
-    width: 1000  // 稍微加宽一点，确保10局显示不拥挤
+    width: 1000  // Slightly wider to ensure ten frames fit comfortably.
     height: 300
     visible: true
     title: qsTr("Bowling Scoreboard")
-    color: "#2c3e50" // 改深色背景更有生产感
+    color: "#2c3e50" // Darker background for a polished appearance.
 
     ColumnLayout {
         anchors.centerIn: parent
         spacing: 30
 
-        // 标题和实时总分
+        // Header and live total score display.
         RowLayout {
             Layout.alignment: Qt.AlignHCenter
             spacing: 20
@@ -34,7 +34,7 @@ Window {
                 radius: 4
                 Text {
                     anchors.centerIn: parent
-                    // 直接绑定 ViewModel 的 totalScore 属性
+                    // Bind directly to the view model's totalScore property.
                     text: bowlingVM.totalScore
                     font.pixelSize: 32
                     font.bold: true
@@ -43,25 +43,25 @@ Window {
             }
         }
 
-        // 核心计分板
+        // Main scoreboard row.
         RowLayout {
             Layout.alignment: Qt.AlignHCenter
             spacing: 8
             
             Repeater {
-                // 绑定到 ViewModel 暴露的 QVariantList frames
+                // Bind to the QVariantList frames exposed by the view model.
                 model: bowlingVM.frames 
                 
                 delegate: FrameBox {
-                    // modelData 对应的是 QVariantMap 中的每一项
+                    // modelData maps to each QVariantMap item.
                     frameNumber: modelData.frameNumber
                     throw1: modelData.t1
                     throw2: modelData.t2
                     throw3: modelData.t3
                     frameScore: modelData.score
                     
-                    // 增加一个简单的状态提示：如果是当前正在进行的局，可以加个高亮
-                    // 这里判断依据：如果该局还没分且前一局有分或者是第一局
+                    // Highlight the current active frame.
+                    // Logic: highlight when the frame has no score yet and the previous frame is completed or this is the first frame.
                     border.color: (modelData.score === "" && (index === 0 || bowlingVM.frames[index-1].score !== "")) 
                                   ? "#3498db" : "#cccccc"
                     border.width: border.color == "#3498db" ? 3 : 1
@@ -69,7 +69,7 @@ Window {
             }
         }
 
-        // 底部状态条
+        // Bottom status bar.
         RowLayout {
             Layout.fillWidth: true
             Layout.leftMargin: 20
@@ -89,7 +89,7 @@ Window {
                 }
             }
 
-            Item { Layout.fillWidth: true } // 弹簧
+            Item { Layout.fillWidth: true } // Spacer.
 
             Button {
                 text: "RESET GAME"

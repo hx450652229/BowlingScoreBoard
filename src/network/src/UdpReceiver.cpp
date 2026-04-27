@@ -1,6 +1,9 @@
 #include "UdpReceiver.hpp"
 #include <QNetworkDatagram>
 
+/**
+ * @brief Construct and bind the UDP receiver socket.
+ */
 UdpReceiver::UdpReceiver(uint16_t port, QObject *parent) : QObject(parent) {
     m_udpSocket = new QUdpSocket(this);
     
@@ -18,13 +21,15 @@ uint16_t UdpReceiver::localPort() const {
     return m_udpSocket ? m_udpSocket->localPort() : 0;
 }
 
+/**
+ * @brief Process any pending datagrams on the UDP socket.
+ */
 void UdpReceiver::processPendingDatagrams() {
     while (m_udpSocket->hasPendingDatagrams()) {
         QNetworkDatagram datagram = m_udpSocket->receiveDatagram();
         QByteArray data = datagram.data().trimmed();
         
-        // 鲁棒的协议解析
-        // 支持纯数字 "10" 或者 "ROLL 10" 格式
+        // Robust protocol parsing: support both numeric values and "ROLL <n>" strings.
         bool ok;
         int pins = -1;
         

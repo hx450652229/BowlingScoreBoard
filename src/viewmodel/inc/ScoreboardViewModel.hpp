@@ -4,27 +4,57 @@
 #include <QVariantList>
 #include <QVariantMap>
 
-#include <BowlingGame.hpp> // 链接到 Core
+#include <BowlingGame.hpp>
 
+/**
+ * @file ScoreboardViewModel.hpp
+ * @brief View model declarations for the bowling scoreboard UI.
+ */
+
+/**
+ * @brief View model that exposes bowling frame and score data to QML.
+ *
+ * The view model wraps the core BowlingGame engine and translates its frame
+ * status into QML-friendly QVariantMap objects.
+ */
 class ScoreboardViewModel : public QObject {
     Q_OBJECT
     
-    // 暴露给 QML 的属性：每一局的具体数据列表
+    /**
+     * @brief Frame status list exposed to QML.
+     */
     Q_PROPERTY(QVariantList frames READ frames NOTIFY framesChanged)
-    // 当前总分
+
+    /**
+     * @brief Total game score exposed to QML.
+     */
     Q_PROPERTY(int totalScore READ totalScore NOTIFY totalScoreChanged)
-    // 游戏是否已结束
+
+    /**
+     * @brief Whether the current game has finished.
+     */
     Q_PROPERTY(bool isFinished READ isFinished NOTIFY isFinishedChanged)
 
 public:
     explicit ScoreboardViewModel(QObject *parent = nullptr);
 
-    // Q_INVOKABLE 使得 QML 可以直接调用这个 C++ 函数进行测试
+    /**
+     * @brief Handle a new bowling roll from the network layer or UI.
+     * @param pins Number of pins knocked down.
+     */
     Q_INVOKABLE void roll(int pins);
+
+    /**
+     * @brief Reset the current bowling game state.
+     */
     Q_INVOKABLE void reset();
 
-    // Getter
+    /**
+     * @brief Retrieve the current frame list for QML binding.
+     * @return A list of frame dictionaries.
+     */
     QVariantList frames() const;
+
     int totalScore() const { return m_game.score(); }
     bool isFinished() const { return m_game.isFinished(); }
 
@@ -34,8 +64,13 @@ signals:
     void isFinishedChanged();
 
 private:
-    BowlingGame m_game; // 组合 Core 逻辑
+    BowlingGame m_game; /**< Core scoring engine instance. */
     
-    // 辅助函数：将 Core 的 FrameStatus 转为 QML 能懂的字典对象
+    /**
+     * @brief Convert a core frame status object to a QML-friendly map.
+     * @param status Frame status from the BowlingGame engine.
+     * @param index Zero-based frame index.
+     * @return QVariantMap with display values for the frame.
+     */
     QVariantMap wrapFrame(const BowlingGame::FrameStatus& status, int index) const;
 };
