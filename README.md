@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-BowlingScoreboard is a Qt6-based bowling score display application implemented in C++20. The project includes:
+BowlingScoreboard is a Qt6-based bowling score display application. The project includes:
 - A QML-based user interface for a bowling scoreboard.
 - A core scoring library for bowling game logic.
 - A network module that receives UDP data.

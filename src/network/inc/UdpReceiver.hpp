@@ -1,8 +1,8 @@
 #pragma once
 
+#include <QHostAddress>
 #include <QObject>
 #include <QUdpSocket>
-#include <QHostAddress>
 
 /**
  * @file UdpReceiver.hpp
@@ -15,9 +15,10 @@
  * This class listens on a UDP port and emits signals when valid pin counts
  * are received or when network status changes.
  */
-class UdpReceiver : public QObject {
+class UdpReceiver : public QObject
+{
     Q_OBJECT
-public:
+  public:
     /**
      * @brief Construct a UdpReceiver instance.
      * @param port Local UDP port to bind.
@@ -31,7 +32,7 @@ public:
      */
     uint16_t localPort() const;
 
-signals:
+  signals:
     /**
      * @brief Emitted when a valid pin count is parsed from UDP.
      * @param pins Number of pins reported by the remote sender.
@@ -44,9 +45,9 @@ signals:
      */
     void statusMessage(QString msg);
 
-private slots:
+  private slots:
     void processPendingDatagrams();
 
-private:
+  private:
     QUdpSocket *m_udpSocket = nullptr; /**< Underlying UDP socket instance. */
 };

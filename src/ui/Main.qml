@@ -76,7 +76,7 @@ Window {
             Layout.rightMargin: 20
 
             Text {
-                text: bowlingVM.isFinished ? "GAME OVER" : "WAITING FOR UDP DATA..."
+                text: bowlingVM.isFinished ? "GAME OVER" : "WAITING FOR NEXT ROLL..."
                 color: bowlingVM.isFinished ? "#e74c3c" : "#2ecc71"
                 font.pixelSize: 14
                 font.bold: true

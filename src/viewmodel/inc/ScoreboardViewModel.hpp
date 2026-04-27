@@ -17,9 +17,10 @@
  * The view model wraps the core BowlingGame engine and translates its frame
  * status into QML-friendly QVariantMap objects.
  */
-class ScoreboardViewModel : public QObject {
+class ScoreboardViewModel : public QObject
+{
     Q_OBJECT
-    
+
     /**
      * @brief Frame status list exposed to QML.
      */
@@ -35,7 +36,7 @@ class ScoreboardViewModel : public QObject {
      */
     Q_PROPERTY(bool isFinished READ isFinished NOTIFY isFinishedChanged)
 
-public:
+  public:
     explicit ScoreboardViewModel(QObject *parent = nullptr);
 
     /**
@@ -58,19 +59,19 @@ public:
     int totalScore() const { return m_game.score(); }
     bool isFinished() const { return m_game.isFinished(); }
 
-signals:
+  signals:
     void framesChanged();
     void totalScoreChanged();
     void isFinishedChanged();
 
-private:
+  private:
     BowlingGame m_game; /**< Core scoring engine instance. */
-    
+
     /**
      * @brief Convert a core frame status object to a QML-friendly map.
      * @param status Frame status from the BowlingGame engine.
      * @param index Zero-based frame index.
      * @return QVariantMap with display values for the frame.
      */
-    QVariantMap wrapFrame(const BowlingGame::FrameStatus& status, int index) const;
+    QVariantMap wrapFrame(const BowlingGame::FrameStatus &status, int index) const;
 };

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <vector>
 #include <numeric>
 #include <stdexcept>
+#include <vector>
 
 /**
  * @file BowlingGame.hpp
@@ -13,13 +13,14 @@
  */
 
 /**
- * @brief Bowling game scoring core logic implemented in modern C++.
+ * @brief Bowling game scoring core logic
  *
  * This class follows standard ten-frame bowling rules and supports strikes,
  * spares, and the tenth-frame bonus rolls.
  */
-class BowlingGame {
-public:
+class BowlingGame
+{
+  public:
     BowlingGame() = default;
 
     /**
@@ -47,9 +48,10 @@ public:
     /**
      * @brief Describes the status of a single frame.
      */
-    struct FrameStatus {
-        std::vector<int> rolls; /**< Roll values recorded in this frame. */
-        int cumulativeScore = 0; /**< Score accumulated through this frame. */
+    struct FrameStatus
+    {
+        std::vector<int> rolls;   /**< Roll values recorded in this frame. */
+        int cumulativeScore = 0;  /**< Score accumulated through this frame. */
         bool isCompleted = false; /**< True when the frame is fully scored. */
     };
 
@@ -70,7 +72,7 @@ public:
      */
     bool isFinished() const;
 
-private:
+  private:
     std::vector<int> m_rolls; /**< Recorded roll values in chronological order. */
     static constexpr int MAX_FRAMES = 10;
     static constexpr int ALL_PINS = 10;
@@ -108,5 +110,5 @@ private:
      * @param rollIndex Index of the first roll in the frame.
      * @return Total pins knocked down in the frame.
      */
-    int sumOfBallsInFrame(int rollIndex) const;
+    int sumOfPinsInFrame(int rollIndex) const;
 };
