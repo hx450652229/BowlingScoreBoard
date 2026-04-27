@@ -5,6 +5,8 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+option(ENABLE_CLANG_TIDY "Enable clang-tidy static analysis target." ON)
+
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
@@ -60,6 +62,31 @@ if(CPPCHECK_EXECUTABLE)
     endif()
 else()
     message(STATUS "cppcheck not found; targets 'cppcheck' and 'cppcheck-html' are unavailable.")
+endif()
+
+if(ENABLE_CLANG_TIDY)
+    find_program(CLANG_TIDY_EXECUTABLE NAMES clang-tidy clang-tidy-18 clang-tidy-17 clang-tidy-16)
+    if(CLANG_TIDY_EXECUTABLE)
+        file(GLOB_RECURSE CLANG_TIDY_SOURCES
+            ${CMAKE_SOURCE_DIR}/src/*.cpp
+            ${CMAKE_SOURCE_DIR}/src/*.cxx
+            ${CMAKE_SOURCE_DIR}/src/*.cc
+            ${CMAKE_SOURCE_DIR}/src/*.c
+        )
+
+        add_custom_target(clang-tidy
+            COMMAND ${CLANG_TIDY_EXECUTABLE}
+                    -quiet
+                    -p ${CMAKE_BINARY_DIR}
+                    -header-filter=${CMAKE_SOURCE_DIR}/src
+                    ${CLANG_TIDY_SOURCES}
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+            COMMENT "Running clang-tidy static analysis"
+            VERBATIM
+        )
+    else()
+        message(STATUS "clang-tidy not found; target 'clang-tidy' is unavailable.")
+    endif()
 endif()
 
 find_package(Qt6 REQUIRED COMPONENTS

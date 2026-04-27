@@ -5,15 +5,19 @@ class BowlingGameTest : public testing::Test {
 protected:
     BowlingGame game;
 
-    void rollMany(int rolls, int pins) {
-        for (int i = 0; i < rolls; ++i) {
+    struct RollCount {
+        unsigned value;
+    };
+
+    void rollMany(RollCount rollCount, int pins) {
+        for (unsigned i = 0; i < rollCount.value; ++i) {
             game.roll(pins);
         }
     }
 };
 
 TEST_F(BowlingGameTest, GutterGameScoresZero) {
-    rollMany(20, 0);
+    rollMany({20}, 0);
     EXPECT_EQ(game.score(), 0);
     EXPECT_TRUE(game.isFinished());
     for (int frame = 1; frame <= 10; ++frame) {
@@ -22,7 +26,7 @@ TEST_F(BowlingGameTest, GutterGameScoresZero) {
 }
 
 TEST_F(BowlingGameTest, AllOnesScoresTwenty) {
-    rollMany(20, 1);
+    rollMany({20}, 1);
     EXPECT_EQ(game.score(), 20);
     EXPECT_TRUE(game.isFinished());
 }
@@ -31,7 +35,7 @@ TEST_F(BowlingGameTest, SpareCalculatesBonus) {
     game.roll(5);
     game.roll(5);
     game.roll(3);
-    rollMany(17, 0);
+    rollMany({17}, 0);
 
     EXPECT_EQ(game.score(), 16);
     EXPECT_EQ(game.scoreAtFrame(1), 13);
@@ -43,7 +47,7 @@ TEST_F(BowlingGameTest, StrikeCalculatesBonus) {
     game.roll(10);
     game.roll(3);
     game.roll(4);
-    rollMany(16, 0);
+    rollMany({16}, 0);
 
     EXPECT_EQ(game.score(), 24);
     EXPECT_EQ(game.scoreAtFrame(1), 17);

@@ -1,0 +1,13 @@
+Checks: >
+  clang-analyzer-*,
+  bugprone-*
+WarningsAsErrors: ''
+HeaderFilterRegex: '^(src/).*'
+FormatStyle: microsoft
+CheckOptions:
+  - key: clang-analyzer-core.NullDereference
+    value: 'true'
+  - key: clang-analyzer-core.DivideZero
+    value: 'true'
+  - key: bugprone-unused-return-value.IgnoreTemplates
+    value: 'false'

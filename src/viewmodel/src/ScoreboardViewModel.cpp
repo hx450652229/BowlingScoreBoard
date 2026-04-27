@@ -1,4 +1,5 @@
 #include "ScoreboardViewModel.hpp"
+#include <QDebug>
 
 /**
  * @brief Construct a new ScoreboardViewModel.
@@ -13,8 +14,11 @@ void ScoreboardViewModel::roll(int pins) {
         emit framesChanged();
         emit totalScoreChanged();
         emit isFinishedChanged();
-    } catch (...) {
-        // In production, this should handle errors explicitly.
+    } catch (const std::invalid_argument &ex) {
+        qWarning() << "ScoreboardViewModel::roll failed:" << ex.what();
+    } catch (const std::exception &ex) {
+        qWarning() << "ScoreboardViewModel::roll unexpected error:" << ex.what();
+        throw;
     }
 }
 
