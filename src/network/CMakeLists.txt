@@ -2,7 +2,9 @@ project(BowlingNetwork LANGUAGES CXX)
 
 add_library(BowlingNetwork STATIC
     inc/UdpReceiver.hpp
+    inc/UdpProtocol.hpp
     src/UdpReceiver.cpp
+    src/UdpProtocol.cpp
 )
 
 target_compile_features(BowlingNetwork PUBLIC cxx_std_20)
@@ -18,6 +20,7 @@ target_link_libraries(BowlingNetwork
 if (BUILD_TESTING)
     add_executable(BowlingNetworkTests
         test/UdpReceiverTest.cpp
+        test/UdpProtocolTest.cpp
     )
     target_link_libraries(BowlingNetworkTests
         PRIVATE

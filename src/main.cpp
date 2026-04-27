@@ -7,7 +7,7 @@
 
 namespace
 {
-constexpr int UDP_RECEIVER_PORT = 45454; /**< Default UDP port for receiving bowling roll data. */
+constexpr uint16_t UDP_RECEIVER_PORT = 45454; /**< Default UDP port for receiving bowling roll data. */
 }
 
 int main(int argc, char *argv[])
@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     ScoreboardViewModel *viewModel = new ScoreboardViewModel(&app);
-    UdpReceiver *receiver = new UdpReceiver(UDP_RECEIVER_PORT, &app);
+    UdpReceiver *receiver = new UdpReceiver(UDP_RECEIVER_PORT);
 
     // Connect the network layer to the view model.
     // Valid roll values received over UDP are forwarded into the model.

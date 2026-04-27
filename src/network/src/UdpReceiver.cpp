@@ -1,20 +1,22 @@
 #include "UdpReceiver.hpp"
+#include "UdpProtocol.hpp"
+
 #include <QNetworkDatagram>
 
-UdpReceiver::UdpReceiver(uint16_t port, QObject *parent) : QObject(parent)
+UdpReceiver::UdpReceiver(uint16_t port, const QHostAddress &bindAddress, QObject *parent) : QObject(parent)
 {
     m_udpSocket = new QUdpSocket(this);
 
-    bool success = m_udpSocket->bind(QHostAddress::LocalHost, port, QUdpSocket::ShareAddress);
+    const bool success = m_udpSocket->bind(bindAddress, port, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
 
     if (success)
     {
         connect(m_udpSocket, &QUdpSocket::readyRead, this, &UdpReceiver::processPendingDatagrams);
-        emit statusMessage(QString("Listening on port %1").arg(port));
+        emit statusMessage(QStringLiteral("Listening on %1:%2").arg(bindAddress.toString()).arg(port));
     }
     else
     {
-        emit statusMessage("Failed to bind UDP port!");
+        emit errorOccurred(QStringLiteral("Failed to bind UDP port %1:%2").arg(bindAddress.toString()).arg(port));
     }
 }
 
@@ -27,29 +29,16 @@ void UdpReceiver::processPendingDatagrams()
 {
     while (m_udpSocket->hasPendingDatagrams())
     {
-        QNetworkDatagram datagram = m_udpSocket->receiveDatagram();
-        QByteArray data = datagram.data().trimmed();
+        const QNetworkDatagram datagram = m_udpSocket->receiveDatagram();
+        const auto parseResult = Bowling::Network::parseUdpMessage(datagram.data());
 
-        // Robust protocol parsing: support both numeric values and "ROLL <n>" strings.
-        bool ok;
-        int pins = -1;
-
-        if (data.startsWith("ROLL "))
+        if (parseResult.isValid())
         {
-            pins = data.mid(5).toInt(&ok);
+            emit rollReceived(parseResult.message->pins);
         }
         else
         {
-            pins = data.toInt(&ok);
-        }
-
-        if (ok && pins >= 0 && pins <= 10)
-        {
-            emit rollReceived(pins);
-        }
-        else
-        {
-            emit statusMessage("Received invalid data: " + QString(data));
+            emit errorOccurred(parseResult.error);
         }
     }
 }
